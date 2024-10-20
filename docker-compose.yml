@@ -25,7 +25,7 @@ services:
       DB_NAME: fit1
       DB_USER: postgres
       DB_PASSWORD: postgres
-      DB_HOST: db
+      DB_HOST: postgres
       DB_PORT: 5432
     networks:
       - fit1_network

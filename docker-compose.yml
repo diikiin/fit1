@@ -2,11 +2,37 @@ services:
 
   postgres:
     image: postgres:16.4-alpine
+    environment:
+      POSTGRES_DB: fit1
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - db_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    networks:
+      - fit1_network
+
+  django:
+    build: .
     volumes:
-      - ~/postgres:/var/lib/postgresql/data
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
     environment:
-      POSTGRES-USER: postgres
-      POSTGRES-PASSWORD: postgres
-      POSTGRES_DB: fit1
+      DB_NAME: fit1
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_HOST: db
+      DB_PORT: 5432
+    networks:
+      - fit1_network
+
+volumes:
+  db_data:
+
+networks:
+  fit1_network:
+    driver: bridge

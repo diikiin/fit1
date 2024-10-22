@@ -2,8 +2,8 @@ from django.db import models
 
 
 class Studio(models.Model):
-    name = models.CharField(max_length=100, null=False)
-    type = models.CharField(max_length=100)
+    name = models.CharField(max_length=255, null=False)
+    type = models.CharField(max_length=255, null=False, db_index=True)
     description = models.TextField()
 
     def __str__(self):
@@ -27,9 +27,10 @@ class ExerciseClass(models.Model):
         FRIDAY = 6, 'Friday'
         SATURDAY = 7, 'Saturday'
 
-    name = models.CharField(max_length=100, null=False)
+    name = models.CharField(max_length=255, null=False)
     description = models.TextField(null=True, blank=True)
     weekday = models.IntegerField(choices=WeakDays.choices)
+    exercise_time_in_minutes = models.IntegerField()
     schedule = models.ForeignKey(Schedule, on_delete=models.CASCADE)
 
     def __str__(self):
@@ -39,18 +40,19 @@ class ExerciseClass(models.Model):
 class RecordTime(models.Model):
     date = models.DateField()
     time = models.CharField(max_length=20)
-    hasEmptySlots = models.BooleanField(default=False)
-    maximumSlots = models.IntegerField()
-    exerciseClass = models.ForeignKey(ExerciseClass, on_delete=models.CASCADE)
+    has_empty_slots = models.BooleanField(default=False)
+    registered_slots = models.IntegerField(default=0)
+    maximum_slots = models.IntegerField()
+    exercise_class = models.ForeignKey(ExerciseClass, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f"Record time for {self.exerciseClass.name} at {self.date}"
+        return f"Record time for {self.exercise_class.name} at {self.date}"
 
 
 class Address(models.Model):
-    region = models.CharField(max_length=100)
-    city = models.CharField(max_length=100)
-    address = models.CharField(max_length=200)
+    region = models.CharField(max_length=255)
+    city = models.CharField(max_length=255)
+    address = models.CharField(max_length=255)
     studio = models.OneToOneField(Studio, on_delete=models.CASCADE)
 
     def __str__(self):
